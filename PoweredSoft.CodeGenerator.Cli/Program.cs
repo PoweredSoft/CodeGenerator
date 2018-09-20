@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using PoweredSoft.CodeGenerator.Constants;
 
 namespace PoweredSoft.CodeGenerator.Cli
@@ -7,7 +8,7 @@ namespace PoweredSoft.CodeGenerator.Cli
     {
         static void Main(string[] args)
         {
-            var lines = NamespaceBuilder
+            var ns = NamespaceBuilder
                 .Create()
                 .Name("Acme.Models")
                 .AddClass(c => c
@@ -18,12 +19,15 @@ namespace PoweredSoft.CodeGenerator.Cli
                     .Field(f => f.AccessModifier(AccessModifiers.Private).Name("_dateOfBirth").Type("DateTime?"))
                     .Property(p => p.Name("FirstName").Type("string"))
                     .Property(p => p.Name("LastName").Type("string"))
-                    .Property(p => p.Name("DateOfBirth").Type("DateTime?").DefaultValue("null").UnderlyingMember("_dateOfBirth"))
-                )
-                .GenerateLines();
+                    .Property(p =>
+                        p.Name("DateOfBirth").Type("DateTime?").DefaultValue("null").UnderlyingMember("_dateOfBirth"))
+                );
 
-            Console.WriteLine(string.Join("\n", lines));
-            Console.ReadKey();
+            FileBuilder
+                .Create()
+                .Using("System")
+                .Add(ns)
+                .SaveToFile("C:\\test\\Person.cs", Encoding.UTF8);
         }
     }
 }
