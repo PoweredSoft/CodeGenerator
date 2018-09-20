@@ -20,39 +20,39 @@ namespace PoweredSoft.CodeGenerator
 
         protected List<string> GenerateUnderlyingProperty()
         {
-            var line = $"{Model.AccessModifier.Generate()}";
+            var ret = new List<string>();
+
+            // property line.,
+            var propertyLine = $"{Model.AccessModifier.Generate()}";
 
             if (Model.IsStatic)
-                line += " static";
+                propertyLine += " static";
+            
+            propertyLine += $" {Model.Type} {Model.Name}";
 
-            line += $" {Model.Type} {Model.Name}";
-            line += " {";
+            ret.Add(propertyLine);
 
+            // open.
+            ret.Add("{");
 
             // get
-
-
-            // set
+            ret.Add("    get");
+            ret.Add("    {");
+            ret.Add($"        return {Model.UnderlyingMember};");
+            ret.Add("    }");
 
             if (Model.CanSet)
             {
-                line += " { get; ";
-
-                if (Model.SetAccessModifier != AccessModifiers.Public)
-                    line += $"{Model.SetAccessModifier.Generate()} set; }}";
-                else
-                    line += " set; }";
-
-                if (!string.IsNullOrWhiteSpace(Model.DefaultValue))
-                    line += $" = {Model.DefaultValue};";
-            }
-            else
-            {
-                line += " { get; }";
+                var setAccess = Model.SetAccessModifier != Model.AccessModifier ? $"{Model.SetAccessModifier.Generate()} " : "";
+                ret.Add($"    {setAccess}set");
+                ret.Add("    {");
+                ret.Add($"        {Model.UnderlyingMember} = value;");
+                ret.Add("    }");
             }
 
-
-            return new List<string> {line};
+            // end
+            ret.Add("}");
+            return ret;
         }
 
         protected List<string> GenerateSimpleProperty()
