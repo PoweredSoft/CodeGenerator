@@ -27,6 +27,19 @@ namespace PoweredSoft.CodeGenerator
 
         public IEnumerable<ClassBuilder> Classes => FileClasses.Union(NameSpaceClasses);
 
+        public ClassBuilder FindClass(string name, string filterNamespace = null)
+        {
+            if (null == filterNamespace)
+                return Classes.FirstOrDefault(t => t.Model.Name == name);
+
+            return NameSpaces
+                .Where(t => t.Model.Name == filterNamespace)
+                .SelectMany(t => t.Model.Children)
+                .Where(t => t is ClassBuilder)
+                .Cast<ClassBuilder>()
+                .FirstOrDefault(t => t.Model.Name == name);
+        }
+
         public GenerationContext File(Action<FileBuilder> action)
         {
             var file = FileBuilder.Create();
