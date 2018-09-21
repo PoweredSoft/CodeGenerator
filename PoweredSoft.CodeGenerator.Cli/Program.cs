@@ -32,8 +32,20 @@ namespace PoweredSoft.CodeGenerator.Cli
                                 return IfBuilder
                                     .Create()
                                     .RawCondition(rc => rc.Condition("entity.DateOfBirth != null"))
-                                    .Add(RawLineBuilder.Create("DateOfBirth = entity.DateOfBirth"))
-                                    .Add(RawLineBuilder.Create("entity = entity"));
+                                    .Add(RawLineBuilder.Create("DateOfBirth = entity.DateOfBirth"));
+                            })
+                            .Add(() =>
+                            {
+                                return ElseIfBuilder
+                                    .Create()
+                                    .RawCondition(rc => rc.Condition("entity.DateOfBirth == null"))
+                                    .Add(RawLineBuilder.Create("DateOFBirth = DateTime.Now"));
+                            })
+                            .Add(() =>
+                            {
+                                return ElseBuilder
+                                    .Create()
+                                    .Add(RawLineBuilder.Create("entity = null"));
                             });
                     })
                 );

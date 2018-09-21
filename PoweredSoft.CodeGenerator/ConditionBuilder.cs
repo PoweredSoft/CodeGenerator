@@ -69,6 +69,8 @@ namespace PoweredSoft.CodeGenerator
         private string CreateConditionExpression()
         {
             var ret = Model.ConditionType;
+            if (ret == "else")
+                return ret;
 
             var parts = Model.Expressions.Select((exp, index) =>
             {

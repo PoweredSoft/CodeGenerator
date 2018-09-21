@@ -2,7 +2,7 @@
 
 namespace PoweredSoft.CodeGenerator
 {
-    public class ElseBuilder : ConditionBuilder<ElseIfConditionModel, ElseBuilder>
+    public class ElseBuilder : ConditionBuilder<ElseConditionModel, ElseBuilder>
     {
 
     }
