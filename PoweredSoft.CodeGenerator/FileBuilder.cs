@@ -13,6 +13,14 @@ namespace PoweredSoft.CodeGenerator
         public static FileBuilder Create() => new FileBuilder();
         public FileModel Model { get; protected set; } = new FileModel();
 
+        public FileBuilder Namespace(Action<NamespaceBuilder> action)
+        {
+            var ns = NamespaceBuilder.Create();
+            Model.Children.Add(ns);
+            action(ns);
+            return this;
+        }
+
         public FileBuilder Add(IGeneratable child)
         {
             Model.Children.Add(child);

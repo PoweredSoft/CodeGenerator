@@ -7,14 +7,14 @@ namespace PoweredSoft.CodeGenerator
 {
     public class GenerationContext
     {
-        public string OutputDirectory { get; set; }
-        public bool OverrideIfExists { get; set; } = false;
         public List<FileBuilder> Files { get; set; } = new List<FileBuilder>();
 
         public IEnumerable<NamespaceBuilder> NameSpaces => Files
             .SelectMany(t => t.Model.Children)
             .Where(t => t is NamespaceBuilder)
             .Cast<NamespaceBuilder>();
+
+        public static GenerationContext Create() => new GenerationContext();
 
         private IEnumerable<ClassBuilder> FileClasses => Files
             .SelectMany(t => t.Model.Children)

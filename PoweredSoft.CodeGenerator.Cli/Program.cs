@@ -9,6 +9,70 @@ namespace PoweredSoft.CodeGenerator.Cli
     {
         static void Main(string[] args)
         {
+            var ctx = GenerationContext
+                .Create()
+                .File(file =>
+                {
+                    file
+                        .Using("System")
+                        .Namespace(ns =>
+                        {
+                            ns
+                                .Name("Acme.Dal")
+                                .Class(c =>
+                                {
+                                    c
+                                        .Name("Person")
+                                        .Partial(true)
+                                        .Property(p => p.Name("Id").Type("long").Virtual(true))
+                                        .Property(p => p.Name("FirstName").Type("string").Virtual(true))
+                                        .Property(p => p.Name("LastName").Type("string").Virtual(true));
+                                })
+                                .Class(c =>
+                                {
+                                    c
+                                        .Name("PersonModelBase")
+                                        .Partial(true)
+                                        .Property(p => p.Name("Id").Type("long?").Virtual(true))
+                                        .Property(p => p.Name("FirstName").Type("string").Virtual(true))
+                                        .Property(p => p.Name("LastName").Type("string").Virtual(true))
+                                        .Method(m =>
+                                        {
+                                            m
+                                                .Name("From")
+                                                .Virtual(true)
+                                                .Parameter(p => p.Name("entity").Type("Person"))
+                                                .Add(RawLineBuilder.Create("Id = entity.Id"))
+                                                .Add(RawLineBuilder.Create("FirstName = entity.FirstName"))
+                                                .Add(RawLineBuilder.Create("LastName = entity.LastName"));
+                                        })
+                                        .Method(m =>
+                                        {
+                                            m
+                                                .Name("To")
+                                                .Virtual(true)
+                                                .Parameter(p => p.Name("entity").Type("Person"))
+                                                .Add(() =>
+                                                {
+                                                    return IfBuilder
+                                                        .Create()
+                                                        .RawCondition(rc => rc.Condition("Id != null"))
+                                                        .Add(RawLineBuilder.Create("entity.Id = Id.Value"));
+                                                })
+                                                .Add(RawLineBuilder.Create("entity.FirstName = FirstName"))
+                                                .Add(RawLineBuilder.Create("entity.LastName = LastName"));
+                                        });
+                                })
+                                ;
+                        });
+                });
+
+            var lines = ctx.Files.First().GenerateLines();
+            Console.WriteLine(string.Join("\n", lines));
+            Console.ReadKey();
+
+
+            /*
             var ns = NamespaceBuilder
                 .Create()
                 .Name("Acme.Models")
@@ -60,7 +124,7 @@ namespace PoweredSoft.CodeGenerator.Cli
                 //.SaveToFile("C:\\test\\Person.cs", Encoding.UTF8);
 
             Console.WriteLine(string.Join("\n", lines));
-            Console.ReadKey();
+            Console.ReadKey();*/
         }
     }
 }
