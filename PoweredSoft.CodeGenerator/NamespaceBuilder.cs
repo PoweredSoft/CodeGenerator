@@ -21,7 +21,7 @@ namespace PoweredSoft.CodeGenerator
             return this;
         }
 
-        public NamespaceBuilder AddClass(Action<ClassBuilder> configurator)
+        public NamespaceBuilder Class(Action<ClassBuilder> configurator)
         {
             var child = ClassBuilder.Create();
             Model.Children.Add(child);

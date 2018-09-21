@@ -4,11 +4,20 @@ using System.Linq;
 using System.Text;
 using PoweredSoft.CodeGenerator.Constants;
 using PoweredSoft.CodeGenerator.Core;
+using PoweredSoft.CodeGenerator.Models;
 
 namespace PoweredSoft.CodeGenerator.Extensions
 {
     public static class GenerateExtensions
     {
+        public static string Generate(this ParameterModel parameterModel)
+        {
+            var ret = $"{parameterModel.Type} {parameterModel.Name}";
+            if (!string.IsNullOrWhiteSpace(parameterModel.DefaultValue))
+                ret += $" = {parameterModel.DefaultValue}";
+            return ret;
+        }
+
         public static string Generate(this AccessModifiers accessModifier)
         {
             if (accessModifier == AccessModifiers.Public)
@@ -41,7 +50,7 @@ namespace PoweredSoft.CodeGenerator.Extensions
             return ret;
         }
 
-        public static List<string> IdentChildren(this List<IGeneratable> children, int identCount = 1)
+        public static List<string> IdentChildren(this IEnumerable<IGeneratable> children, int identCount = 1)
         {
             var childrenLines = children.SelectMany(t => t.GenerateLines()).ToList();
             var ret = childrenLines.IdentLines(identCount);

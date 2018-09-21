@@ -62,6 +62,9 @@ namespace PoweredSoft.CodeGenerator
             if (Model.IsStatic)
                 line += " static";
 
+            if (Model.IsVirtual)
+                line += " virtual";
+
             line += $" {Model.Type} {Model.Name}";
             line += " { get;";
 
@@ -79,6 +82,12 @@ namespace PoweredSoft.CodeGenerator
                 line += $" = {Model.DefaultValue};";
 
             return new List<string> { line };
+        }
+
+        public PropertyBuilder Virtual(bool isVirtual)
+        {
+            Model.IsVirtual = isVirtual;
+            return this;
         }
 
         public PropertyBuilder CanSet(bool canSet)

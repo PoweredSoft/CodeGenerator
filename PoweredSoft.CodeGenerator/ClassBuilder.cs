@@ -83,5 +83,14 @@ namespace PoweredSoft.CodeGenerator
             ret.Add("}");
             return ret;
         }
+
+
+        public ClassBuilder Method(Action<MethodBuilder> action)
+        {
+            var method = new MethodBuilder();
+            Model.Children.Add(method);
+            action(method);
+            return this;
+        }
     }
 }
