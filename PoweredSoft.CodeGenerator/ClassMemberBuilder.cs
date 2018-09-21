@@ -9,7 +9,7 @@ namespace PoweredSoft.CodeGenerator
         where TBuilder : class, new()
         where TModel : ClassMemberModel, new()
     {
-        protected TModel Model { get; set; } = new TModel();
+        public TModel Model { get; protected set; } = new TModel();
 
         public static TBuilder Create() => new TBuilder();
 

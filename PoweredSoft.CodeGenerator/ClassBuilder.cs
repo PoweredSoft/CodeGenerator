@@ -11,7 +11,18 @@ namespace PoweredSoft.CodeGenerator
 {
     public class ClassBuilder : IGeneratable
     {
-        protected ClassModel Model { get; set; } = new ClassModel();
+        public ClassModel Model { get; protected set; } = new ClassModel();
+
+        public IEnumerable<PropertyBuilder> Properties => Model.Children.Where(t => t is PropertyBuilder).Cast<PropertyBuilder>();
+        public IEnumerable<FieldBuilder> Fields => Model.Children.Where(t => t is FieldBuilder).Cast<FieldBuilder>();
+        public IEnumerable<MethodBuilder> Methods => Model.Children.Where(t => t is MethodBuilder).Cast<MethodBuilder>();
+
+        public bool HasMemberWithName(string name) => Model.Children.Any(t => (t as IHasName)?.Name == name);
+        public bool PropertyExists(string name) => Properties.Any(t => t.Model.Name == name);
+        public bool FieldExists(string name) => Fields.Any(t => t.Model.Name == name);
+        public PropertyBuilder GetProperty(string name) => Properties.FirstOrDefault(t => t.Model.Name == name);
+        public FieldBuilder GetField(string name) => Fields.FirstOrDefault(t => t.Model.Name == name);
+
 
         public static ClassBuilder Create()
         {
@@ -55,6 +66,26 @@ namespace PoweredSoft.CodeGenerator
             var child = PropertyBuilder.Create();
             Model.Children.Add(child);
             configurator(child);
+            return this;
+        }
+
+        public ClassBuilder Property(string name, Action<PropertyBuilder> action)
+        {
+            var property = GetProperty(name);
+            if (property == null)
+                throw new Exception($"Could not find property with name: {name}");
+
+            action(property);
+            return this;
+        }
+
+        public ClassBuilder Field(string name, Action<FieldBuilder> action)
+        {
+            var field = GetField(name);
+            if (field == null)
+                throw new Exception($"Could not find field with name: {name}");
+
+            action(field);
             return this;
         }
 

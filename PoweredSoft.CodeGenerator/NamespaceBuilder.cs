@@ -11,7 +11,7 @@ namespace PoweredSoft.CodeGenerator
 {
     public class NamespaceBuilder : IGeneratable
     {
-        protected NamespaceModel Model { get; set; } = new NamespaceModel();
+        public NamespaceModel Model { get; protected set; } = new NamespaceModel();
 
         public static NamespaceBuilder Create() => new NamespaceBuilder();
 

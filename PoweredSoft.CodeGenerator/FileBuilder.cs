@@ -11,7 +11,7 @@ namespace PoweredSoft.CodeGenerator
     public class FileBuilder : IGeneratable
     {
         public static FileBuilder Create() => new FileBuilder();
-        protected FileModel Model { get; set; } = new FileModel();
+        public FileModel Model { get; protected set; } = new FileModel();
 
         public FileBuilder Add(IGeneratable child)
         {
