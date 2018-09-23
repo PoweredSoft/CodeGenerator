@@ -1,7 +1,10 @@
 ﻿using System;
+using System.CodeDom;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.CSharp;
 using PoweredSoft.CodeGenerator.Constants;
 using PoweredSoft.CodeGenerator.Core;
 using PoweredSoft.CodeGenerator.Models;
@@ -30,6 +33,13 @@ namespace PoweredSoft.CodeGenerator.Extensions
                 return "protected";
 
             throw new NotSupportedException("Unknown access modifier specified");
+        }
+
+        public static string GetOutputType(this Type type)
+        {
+            var compiler = new CSharpCodeProvider();
+            var codeTypeReference = new CodeTypeReference(type);
+            return compiler.GetTypeOutput(codeTypeReference);
         }
 
         public static List<string> IdentLines(this List<string> lines, int identCount = 1)

@@ -27,6 +27,20 @@ namespace PoweredSoft.CodeGenerator
 
         public IEnumerable<ClassBuilder> Classes => FileClasses.Union(NameSpaceClasses);
 
+        public GenerationContext SingleFile(Action<FileBuilder> action)
+        {
+            if (Files.Any())
+            {
+                action(Files.First());
+                return this;
+            }
+
+            var file = FileBuilder.Create();
+            Files.Add(file);
+            action(file);
+            return this;
+        }
+
         public ClassBuilder FindClass(string name, string filterNamespace = null)
         {
             if (null == filterNamespace)
@@ -45,6 +59,15 @@ namespace PoweredSoft.CodeGenerator
             var file = FileBuilder.Create();
             Files.Add(file);
             action(file);
+            return this;
+        }
+
+        public GenerationContext SaveToDisk(Encoding encoding)
+        {
+            Files.ForEach(file =>
+            {
+                file.SaveToFile(encoding);
+            });
             return this;
         }
     }

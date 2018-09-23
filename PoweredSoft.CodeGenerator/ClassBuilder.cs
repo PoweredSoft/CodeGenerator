@@ -69,21 +69,39 @@ namespace PoweredSoft.CodeGenerator
             return this;
         }
 
-        public ClassBuilder Property(string name, Action<PropertyBuilder> action)
+        public ClassBuilder Property(string name, bool createIfNotExist, Action<PropertyBuilder> action)
         {
             var property = GetProperty(name);
-            if (property == null)
+            if (property == null && !createIfNotExist)
                 throw new Exception($"Could not find property with name: {name}");
+
+            if (property == null)
+            {
+                return Property(t =>
+                {
+                    t.Name(name);
+                    action(t);
+                });
+            }
 
             action(property);
             return this;
         }
 
-        public ClassBuilder Field(string name, Action<FieldBuilder> action)
+        public ClassBuilder Field(string name, bool createIfNotExist, Action<FieldBuilder> action)
         {
             var field = GetField(name);
-            if (field == null)
+            if (field == null && !createIfNotExist)
                 throw new Exception($"Could not find field with name: {name}");
+
+            if (field == null)
+            {
+                return Field(t =>
+                {
+                    t.Name(name);
+                    action(t);
+                });
+            }
 
             action(field);
             return this;

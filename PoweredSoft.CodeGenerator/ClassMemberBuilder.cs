@@ -19,6 +19,12 @@ namespace PoweredSoft.CodeGenerator
             return this as TBuilder;
         }
 
+        public TBuilder Comment(string comment)
+        {
+            Model.Comment = comment;
+            return this as TBuilder;
+        }
+
         public TBuilder Name(string name)
         {
             Model.Name = name;

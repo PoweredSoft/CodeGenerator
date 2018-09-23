@@ -9,5 +9,6 @@ namespace PoweredSoft.CodeGenerator.Models
     {
         public List<string> Usings { get; set; } = new List<string>();
         public List<IGeneratable> Children = new List<IGeneratable>();
+        public string Path { get; set; }
     }
 }

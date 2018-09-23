@@ -13,6 +13,9 @@ namespace PoweredSoft.CodeGenerator
     {
         public NamespaceModel Model { get; protected set; } = new NamespaceModel();
 
+        public IEnumerable<ClassBuilder> Classes => Model.Children.Where(t => t is ClassBuilder).Cast<ClassBuilder>();
+
+
         public static NamespaceBuilder Create() => new NamespaceBuilder();
 
         public NamespaceBuilder Name(string name)
@@ -26,6 +29,25 @@ namespace PoweredSoft.CodeGenerator
             var child = ClassBuilder.Create();
             Model.Children.Add(child);
             configurator(child);
+            return this;
+        }
+
+        public NamespaceBuilder Class(string name, bool createIfNotExist, Action<ClassBuilder> action)
+        {
+            var child = Classes.FirstOrDefault(t => t.Model.Name == name);
+            if (child == null && !createIfNotExist)
+                throw new Exception($"Could not find class with name: {name}");
+
+            if (child == null)
+            {
+                return Class(t =>
+                {
+                    t.Name(name);
+                    action(t);
+                });
+            }
+
+            action(child);
             return this;
         }
 

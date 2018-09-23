@@ -81,6 +81,9 @@ namespace PoweredSoft.CodeGenerator
             if (Model.CanSet && !string.IsNullOrWhiteSpace(Model.DefaultValue))
                 line += $" = {Model.DefaultValue};";
 
+            if (!string.IsNullOrWhiteSpace(Model.Comment))
+                line += $"// {Model.Comment}";
+
             return new List<string> { line };
         }
 

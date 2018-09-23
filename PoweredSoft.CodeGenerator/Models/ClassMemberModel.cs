@@ -10,5 +10,6 @@ namespace PoweredSoft.CodeGenerator.Models
         public string Name { get; set; }
         public string DefaultValue { get; set; }
         public bool IsStatic { get; set; } = false;
+        public string Comment { get; set; }
     }
 }
