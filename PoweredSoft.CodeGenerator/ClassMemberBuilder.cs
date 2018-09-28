@@ -49,6 +49,12 @@ namespace PoweredSoft.CodeGenerator
             return this as TBuilder;
         }
 
+        public TBuilder Meta(object meta)
+        {
+            Model.Meta = meta;
+            return this as TBuilder;
+        }
+
         public abstract List<string> GenerateLines();
     }
 }

@@ -9,7 +9,7 @@ using PoweredSoft.CodeGenerator.Models;
 
 namespace PoweredSoft.CodeGenerator
 {
-    public class ClassBuilder : IGeneratable
+    public class ClassBuilder : IGeneratable 
     {
         public ClassModel Model { get; protected set; } = new ClassModel();
 
@@ -139,6 +139,12 @@ namespace PoweredSoft.CodeGenerator
             var method = new MethodBuilder();
             Model.Children.Add(method);
             action(method);
+            return this;
+        }
+
+        public ClassBuilder Meta(object meta)
+        {
+            Model.Meta = meta;
             return this;
         }
     }

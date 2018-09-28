@@ -35,6 +35,39 @@ namespace PoweredSoft.CodeGenerator.Extensions
             throw new NotSupportedException("Unknown access modifier specified");
         }
 
+        public static TBuilderChild FindByMeta<TBuilderChild>(this object parent, object meta)
+            where TBuilderChild : class 
+        {
+            var propertyModel = parent.GetType().GetProperty("Model");
+            if (propertyModel == null)
+                return null;
+
+            var model = propertyModel.GetValue(parent) as IHasGeneratableChildren;
+            if (model == null)
+                return null;
+
+            var ret = model
+                .Children
+                .Where(t => t is TBuilderChild)
+                .FirstOrDefault(t =>
+                {
+                    var modelProp = t.GetType().GetProperties().FirstOrDefault(t2 => t2.Name == "Model");
+                    if (modelProp == null)
+                        return false;
+
+                    var modelInstance = modelProp.GetValue(t);
+                    if (modelInstance == null)
+                        return false;
+
+                    if (!(modelInstance is IHasMeta))
+                        return false;
+
+                    return (modelInstance as IHasMeta).Meta == meta;
+                });
+
+            return (TBuilderChild)ret;
+        }
+
         public static string GetOutputType(this Type type)
         {
             var compiler = new CSharpCodeProvider();

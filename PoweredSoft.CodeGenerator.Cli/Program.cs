@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text;
 using PoweredSoft.CodeGenerator.Constants;
+using PoweredSoft.CodeGenerator.Extensions;
 
 namespace PoweredSoft.CodeGenerator.Cli
 {
@@ -9,6 +10,11 @@ namespace PoweredSoft.CodeGenerator.Cli
     {
         static void Main(string[] args)
         {
+            var a = new 
+            {
+                SomeInfo = "ABC"
+            };
+
             var ctx = GenerationContext
                 .Create()
                 .File(file =>
@@ -26,7 +32,7 @@ namespace PoweredSoft.CodeGenerator.Cli
                                         .Partial(true)
                                         .Property(p => p.Name("Id").Type("long").Virtual(true))
                                         .Property(p => p.Name("FirstName").Type("string").Virtual(true))
-                                        .Property(p => p.Name("LastName").Type("string").Virtual(true));
+                                        .Property(p => p.Name("LastName").Type("string").Virtual(true).Meta(a));
                                 })
                                 .Class(c =>
                                 {
@@ -66,6 +72,8 @@ namespace PoweredSoft.CodeGenerator.Cli
                                 ;
                         });
                 });
+
+            var propertyOfMetaA = ctx.FindClass("Person").FindByMeta<PropertyBuilder>(a);
 
             var lines = ctx.Files.First().GenerateLines();
             Console.WriteLine(string.Join("\n", lines));
