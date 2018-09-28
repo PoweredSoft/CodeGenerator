@@ -3,23 +3,22 @@ using System.Collections.Generic;
 using System.Text;
 using PoweredSoft.CodeGenerator.Core;
 using PoweredSoft.CodeGenerator.Extensions;
-using PoweredSoft.CodeGenerator.Models;
 
 namespace PoweredSoft.CodeGenerator
 {
-    public class FieldBuilder : ClassMemberBuilder<FieldModel, FieldBuilder>, IGeneratable
+    public class FieldBuilder : ClassMemberBuilder<FieldBuilder>
     {
         public override List<string> GenerateLines()
         {
-            var fieldLine = $"{Model.AccessModifier.Generate()}";
+            var fieldLine = $"{_accessModifier.Generate()}";
 
-            if (Model.IsStatic)
+            if (_isStatic)
                 fieldLine += " static";
 
-            fieldLine += $" {Model.Type} {Model.Name}";
+            fieldLine += $" {_type} {_name}";
 
-            if (!string.IsNullOrWhiteSpace(Model.DefaultValue))
-                fieldLine += $" = {Model.DefaultValue}";
+            if (!string.IsNullOrWhiteSpace(_defaultValue))
+                fieldLine += $" = {_defaultValue}";
 
             fieldLine += ";";
             return new List<string> {fieldLine};

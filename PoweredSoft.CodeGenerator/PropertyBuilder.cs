@@ -4,15 +4,19 @@ using System.ComponentModel.Design;
 using System.Text;
 using PoweredSoft.CodeGenerator.Constants;
 using PoweredSoft.CodeGenerator.Extensions;
-using PoweredSoft.CodeGenerator.Models;
 
 namespace PoweredSoft.CodeGenerator
 {
-    public class PropertyBuilder : ClassMemberBuilder<PropertyModel, PropertyBuilder>
+    public class PropertyBuilder : ClassMemberBuilder<PropertyBuilder>
     {
+        protected string _underlyingMember;
+        private bool _canSet;
+        private AccessModifiers _setAccessModifier;
+        private bool _isVirtual;
+
         public override List<string> GenerateLines()
         {
-            if (!string.IsNullOrWhiteSpace(Model.UnderlyingMember))
+            if (!string.IsNullOrWhiteSpace(_underlyingMember))
                 return GenerateUnderlyingProperty();
 
             return GenerateSimpleProperty();
@@ -23,12 +27,12 @@ namespace PoweredSoft.CodeGenerator
             var ret = new List<string>();
 
             // property line.,
-            var propertyLine = $"{Model.AccessModifier.Generate()}";
+            var propertyLine = $"{_accessModifier.Generate()}";
 
-            if (Model.IsStatic)
+            if (_isStatic)
                 propertyLine += " static";
             
-            propertyLine += $" {Model.Type} {Model.Name}";
+            propertyLine += $" {_type} {_name}";
 
             ret.Add(propertyLine);
 
@@ -38,15 +42,15 @@ namespace PoweredSoft.CodeGenerator
             // get
             ret.Add("    get");
             ret.Add("    {");
-            ret.Add($"        return {Model.UnderlyingMember};");
+            ret.Add($"        return {_underlyingMember};");
             ret.Add("    }");
 
-            if (Model.CanSet)
+            if (_canSet)
             {
-                var setAccess = Model.SetAccessModifier != Model.AccessModifier ? $"{Model.SetAccessModifier.Generate()} " : "";
+                var setAccess = _setAccessModifier != _accessModifier ? $"{_setAccessModifier.Generate()} " : "";
                 ret.Add($"    {setAccess}set");
                 ret.Add("    {");
-                ret.Add($"        {Model.UnderlyingMember} = value;");
+                ret.Add($"        {_underlyingMember} = value;");
                 ret.Add("    }");
             }
 
@@ -57,57 +61,57 @@ namespace PoweredSoft.CodeGenerator
 
         protected List<string> GenerateSimpleProperty()
         {
-            var line = $"{Model.AccessModifier.Generate()}";
+            var line = $"{_accessModifier.Generate()}";
 
-            if (Model.IsStatic)
+            if (_isStatic)
                 line += " static";
 
-            if (Model.IsVirtual)
+            if (_isVirtual)
                 line += " virtual";
 
-            line += $" {Model.Type} {Model.Name}";
+            line += $" {_type} {_name}";
             line += " { get;";
 
-            if (Model.CanSet)
+            if (_canSet)
             {
-                if (Model.SetAccessModifier != Model.AccessModifier)
-                    line += $" {Model.SetAccessModifier.Generate()}";
+                if (_setAccessModifier != _accessModifier)
+                    line += $" {_setAccessModifier.Generate()}";
 
                 line += " set;";
             }
 
             line += " }";
 
-            if (Model.CanSet && !string.IsNullOrWhiteSpace(Model.DefaultValue))
-                line += $" = {Model.DefaultValue};";
+            if (_canSet && !string.IsNullOrWhiteSpace(_defaultValue))
+                line += $" = {_defaultValue};";
 
-            if (!string.IsNullOrWhiteSpace(Model.Comment))
-                line += $"// {Model.Comment}";
+            if (!string.IsNullOrWhiteSpace(_comment))
+                line += $"// {_comment}";
 
             return new List<string> { line };
         }
 
         public PropertyBuilder Virtual(bool isVirtual)
         {
-            Model.IsVirtual = isVirtual;
+            _isVirtual = isVirtual;
             return this;
         }
 
         public PropertyBuilder CanSet(bool canSet)
         {
-            Model.CanSet = canSet;
+            _canSet = canSet;
             return this;
         }
 
         public PropertyBuilder SetAccessModifier(AccessModifiers am)
         {
-            Model.SetAccessModifier = am;
+            _setAccessModifier = am;
             return this;
         }
 
         public PropertyBuilder UnderlyingMember(string underlyingMember)
         {
-            Model.UnderlyingMember = underlyingMember;
+            _underlyingMember = underlyingMember;
             return this;
         }
     }

@@ -1,60 +1,67 @@
 ﻿using System.Collections.Generic;
 using PoweredSoft.CodeGenerator.Constants;
 using PoweredSoft.CodeGenerator.Core;
-using PoweredSoft.CodeGenerator.Models;
 
 namespace PoweredSoft.CodeGenerator
 {
-    public abstract class ClassMemberBuilder<TModel, TBuilder> : IGeneratable
+    public abstract class ClassMemberBuilder<TBuilder> : IMultiLineGeneratable, IHasName, IHasMeta
         where TBuilder : class, new()
-        where TModel : ClassMemberModel, new()
     {
-        public TModel Model { get; protected set; } = new TModel();
+        protected string _type;
+        protected string _comment;
+        protected string _name;
+        protected AccessModifiers _accessModifier;
+        protected string _defaultValue;
+        protected bool _isStatic;
+        protected object _meta;
 
         public static TBuilder Create() => new TBuilder();
 
         public TBuilder Type(string typeName)
         {
-            Model.Type = typeName;
+            _type = typeName;
             return this as TBuilder;
         }
 
         public TBuilder Comment(string comment)
         {
-            Model.Comment = comment;
+            _comment = comment;
             return this as TBuilder;
         }
 
         public TBuilder Name(string name)
         {
-            Model.Name = name;
+            _name = name;
             return this as TBuilder;
         }
 
         public TBuilder AccessModifier(AccessModifiers access)
         {
-            Model.AccessModifier = access;
+            _accessModifier = access;
             return this as TBuilder;
         }
 
         public TBuilder DefaultValue(string defaultValue)
         {
-            Model.DefaultValue = defaultValue;
+            _defaultValue = defaultValue;
             return this as TBuilder;
         }
 
         public TBuilder Static(bool isStatic)
         {
-            Model.IsStatic = isStatic;
+            _isStatic = isStatic;
             return this as TBuilder;
         }
 
         public TBuilder Meta(object meta)
         {
-            Model.Meta = meta;
+            _meta = meta;
             return this as TBuilder;
         }
 
         public abstract List<string> GenerateLines();
+
+        public string GetName() => _name;
+        public object GetMeta() => _meta;
     }
 }

@@ -5,100 +5,108 @@ using System.Text;
 using PoweredSoft.CodeGenerator.Constants;
 using PoweredSoft.CodeGenerator.Core;
 using PoweredSoft.CodeGenerator.Extensions;
-using PoweredSoft.CodeGenerator.Models;
 
 namespace PoweredSoft.CodeGenerator
 {
-    public class MethodBuilder : IGeneratable
+    public class MethodBuilder : IMultiLineGeneratable, IHasName, IHasGeneratableChildren
     {
-        public MethodModel Model { get; set; } = new MethodModel();
+        private string _name;
+        private bool _isVirtual;
+        private bool _isStatic;
+        private string _returnType;
+        private bool _isPartial;
+        private bool _isAbstract;
+        private AccessModifiers _accessModifier;
+
+        public List<ParameterBuilder> Parameters { get; } = new List<ParameterBuilder>();
+        public List<IGeneratable> Children { get; } = new List<IGeneratable>();
 
         public MethodBuilder Name(string name)
         {
-            Model.Name = name;
+            _name = name;
             return this;
         }
 
         public MethodBuilder Virtual(bool isVirtual)
         {
-            Model.IsVirtual = isVirtual;
+            _isVirtual = isVirtual;
             return this;
         }
 
         public MethodBuilder IsStatic(bool isStatic)
         {
-            Model.IsStatic = isStatic;
+            _isStatic = isStatic;
             return this;
         }
 
         public MethodBuilder ReturnType(string type)
         {
-            Model.ReturnType = type;
+            _returnType = type;
             return this;
         }
 
         public MethodBuilder Partial(bool partial)
         {
-            Model.IsPartial = partial;
+            _isPartial = partial;
             return this;
         }
 
         public MethodBuilder Abstract(bool isAbstract)
         {
-            Model.IsAbstract = isAbstract;
+            _isAbstract = isAbstract;
             return this;
         }
 
         public MethodBuilder AccessModifier(AccessModifiers accessModifier)
         {
-            Model.AccessModifier = accessModifier;
+            _accessModifier = accessModifier;
             return this;
         }
 
         public MethodBuilder Parameter(Action<ParameterBuilder> configurator)
         {
             var param = ParameterBuilder.Create();
-            Model.Parameters.Add(param.Model);
+            Parameters.Add(param);
             configurator(param);
             return this;
         }
 
-        public MethodBuilder Add(Func<IGeneratable> child)
+        public MethodBuilder Add(Func<IMultiLineGeneratable> child)
         {
             var result = child();
-            Model.Children.Add(result);
+            Children.Add(result);
             return this;
         }
 
-        public MethodBuilder Add(IGeneratable child)
+        public MethodBuilder Add(IMultiLineGeneratable child)
         {
-            Model.Children.Add(child);
+            Children.Add(child);
             return this;
         }
 
         protected string GenerateSignature()
         {
-            var signature = $"{Model.AccessModifier.Generate()}";
+            var signature = $"{_accessModifier.Generate()}";
 
-            if (Model.IsStatic)
+            if (_isStatic)
                 signature += " static";
 
-            if (Model.IsAbstract)
+            if (_isAbstract)
                 signature += "abstract";
 
-            if (Model.IsVirtual)
+            if (_isVirtual)
                 signature += " virtual";
 
-            if (Model.IsPartial)
+            if (_isPartial)
                 signature += " partial";
 
-            signature += $" {Model.ReturnType} {Model.Name}";
+            signature += $" {_returnType} {_name}";
 
             signature += "(";
-            signature += string.Join(", ", Model.Parameters.Select(t => t.Generate()));
+            signature += string.Join(", ", Parameters.Select(t => t.GenerateInline()));
             signature += ")";
 
-            if (Model.IsPartial || Model.IsAbstract)
+            if (_isPartial || _isAbstract)
                 signature += ";";
 
             return signature;
@@ -112,14 +120,16 @@ namespace PoweredSoft.CodeGenerator
             var signature = GenerateSignature();
             ret.Add(signature);
 
-            if (!Model.IsAbstract && !Model.IsPartial)
+            if (!_isAbstract && !_isPartial)
             {
                 ret.Add("{");
-                ret.AddRange(Model.Children.IdentChildren());
+                ret.AddRange(Children.IdentChildren());
                 ret.Add("}");
             }
 
             return ret;
         }
+
+        public string GetName() => _name;
     }
 }

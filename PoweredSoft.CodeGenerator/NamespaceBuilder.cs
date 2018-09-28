@@ -5,36 +5,33 @@ using System.Net.Http.Headers;
 using System.Text;
 using PoweredSoft.CodeGenerator.Core;
 using PoweredSoft.CodeGenerator.Extensions;
-using PoweredSoft.CodeGenerator.Models;
 
 namespace PoweredSoft.CodeGenerator
 {
-    public class NamespaceBuilder : IGeneratable
+    public class NamespaceBuilder : IMultiLineGeneratable, IHasGeneratableChildren, IHasName
     {
-        public NamespaceModel Model { get; protected set; } = new NamespaceModel();
-
-        public IEnumerable<ClassBuilder> Classes => Model.Children.Where(t => t is ClassBuilder).Cast<ClassBuilder>();
-
-
+        private string _name;
+        public List<IGeneratable> Children { get; } = new List<IGeneratable>();
+        public IEnumerable<ClassBuilder> Classes => Children.Where(t => t is ClassBuilder).Cast<ClassBuilder>();
         public static NamespaceBuilder Create() => new NamespaceBuilder();
 
         public NamespaceBuilder Name(string name)
         {
-            Model.Name = name;
+            _name = name;
             return this;
         }
 
         public NamespaceBuilder Class(Action<ClassBuilder> configurator)
         {
             var child = ClassBuilder.Create();
-            Model.Children.Add(child);
+            Children.Add(child);
             configurator(child);
             return this;
         }
 
         public NamespaceBuilder Class(string name, bool createIfNotExist, Action<ClassBuilder> action)
         {
-            var child = Classes.FirstOrDefault(t => t.Model.Name == name);
+            var child = Classes.FirstOrDefault(t => t.GetName() == name);
             if (child == null && !createIfNotExist)
                 throw new Exception($"Could not find class with name: {name}");
 
@@ -51,10 +48,10 @@ namespace PoweredSoft.CodeGenerator
             return this;
         }
 
-        public NamespaceBuilder AddSubNameSpace(Action<NamespaceBuilder> configurator)
+        public NamespaceBuilder NameSpace(Action<NamespaceBuilder> configurator)
         {
             var child = NamespaceBuilder.Create();
-            Model.Children.Add(child);
+            Children.Add(child);
             configurator(child);
             return this;
         }
@@ -62,11 +59,13 @@ namespace PoweredSoft.CodeGenerator
         public List<string> GenerateLines()
         {
             var ret = new List<string>();
-            ret.Add($"namespace {Model.Name}");
+            ret.Add($"namespace {_name}");
             ret.Add("{");
-            ret.AddRange(Model.Children.IdentChildren());
+            ret.AddRange(Children.IdentChildren());
             ret.Add("}");
             return ret;
         }
+
+        public string GetName() => _name;
     }
 }

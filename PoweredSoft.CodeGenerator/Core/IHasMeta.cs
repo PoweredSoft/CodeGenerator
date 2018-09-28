@@ -6,6 +6,6 @@ namespace PoweredSoft.CodeGenerator.Core
 {
     public interface IHasMeta
     {
-        object Meta { get; set; }
+        object GetMeta();
     }
 }

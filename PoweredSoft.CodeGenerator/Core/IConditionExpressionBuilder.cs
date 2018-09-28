@@ -4,8 +4,9 @@ using System.Text;
 
 namespace PoweredSoft.CodeGenerator.Core
 {
-    public interface IHasGeneratableChildren
+    public interface IConditionExpressionBuilder : IInlineGeneretable
     {
-        List<IGeneratable> Children { get; }
+        bool IsAnd();
+        bool ShouldWrap();
     }
 }

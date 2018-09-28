@@ -1,9 +1,7 @@
-﻿using PoweredSoft.CodeGenerator.Models;
-
-namespace PoweredSoft.CodeGenerator
+﻿namespace PoweredSoft.CodeGenerator
 {
-    public class IfBuilder : ConditionBuilder<IfConditionModel, IfBuilder>
+    public class IfBuilder : ConditionBuilder<IfBuilder>
     {
-
+        protected override string ConditionType => "if";
     }
 }

@@ -4,41 +4,40 @@ using System.Linq;
 using System.Text;
 using PoweredSoft.CodeGenerator.Core;
 using PoweredSoft.CodeGenerator.Extensions;
-using PoweredSoft.CodeGenerator.Models;
 
 namespace PoweredSoft.CodeGenerator
 {
-    public abstract class ConditionBuilder<TModel, TBuilder> : IGeneratable
+    public abstract class ConditionBuilder<TBuilder> : IMultiLineGeneratable, IHasGeneratableChildren
         where TBuilder : class, new()
-        where TModel : ConditionModelBase, new()
     {
-        protected TModel Model { get; set; } = new TModel();
+        protected abstract string ConditionType { get; }
         public static TBuilder Create() => new TBuilder();
+        public List<IConditionExpressionBuilder> Expressions { get; } = new List<IConditionExpressionBuilder>();
+        public List<IGeneratable> Children { get; } = new List<IGeneratable>();
 
         public TBuilder RawCondition(Action<RawConditionExpressionBuilder> action)
         {
             var builder = RawConditionExpressionBuilder.Create();
-            var model = builder.Model;
+            Expressions.Add(builder);
             action(builder);
-            Model.Expressions.Add(model);
             return this as TBuilder;
         }
 
-        public TBuilder Add(IGeneratable child)
+        public TBuilder Add(IMultiLineGeneratable child)
         {
-            Model.Children.Add(child);
+            Children.Add(child);
             return this as TBuilder;
         }
 
-        public TBuilder Add(Func<IGeneratable> child)
+        public TBuilder Add(Func<IMultiLineGeneratable> child)
         {
-            Model.Children.Add(child());
+            Children.Add(child());
             return this as TBuilder;
         }
 
         public List<string> GenerateLines()
         {
-            if (!Model.Children.Any())
+            if (!Children.Any())
                 throw new Exception("Must have lines, to create an condition");
 
             var ret = new List<string>();
@@ -46,9 +45,9 @@ namespace PoweredSoft.CodeGenerator
 
             // single line condition will be generated.
             var singleLineConditionAlreadyAdded = false;
-            if (Model.Children.Count() == 1)
+            if (Children.Count() == 1)
             {
-                var lines = Model.Children[0].GenerateLines();
+                var lines = Children[0].ToLines();
                 if (lines.Count == 1)
                 {
                     ret.AddRange(lines.IdentLines());
@@ -59,7 +58,7 @@ namespace PoweredSoft.CodeGenerator
             if (!singleLineConditionAlreadyAdded)
             { 
                 ret.Add("{");
-                ret.AddRange(Model.Children.IdentChildren());
+                ret.AddRange(Children.IdentChildren());
                 ret.Add("}");
             }
            
@@ -68,22 +67,22 @@ namespace PoweredSoft.CodeGenerator
 
         private string CreateConditionExpression()
         {
-            var ret = Model.ConditionType;
+            var ret = ConditionType;
             if (ret == "else")
                 return ret;
 
-            var parts = Model.Expressions.Select((exp, index) =>
+            var parts = Expressions.Select((exp, index) =>
             {
                 var expStr = "";
                 if (index != 0)
-                    expStr += (exp.And ? "&&" : "||") + " ";
+                    expStr += (exp.IsAnd() ? "&&" : "||") + " ";
 
-                if (exp.Wrap)
+                if (exp.ShouldWrap())
                     expStr += "(";
 
-                expStr += exp.Generate();
+                expStr += exp.GenerateInline();
 
-                if (exp.Wrap)
+                if (exp.ShouldWrap())
                     expStr += ")";
 
                 return expStr;

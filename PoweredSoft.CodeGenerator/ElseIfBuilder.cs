@@ -1,9 +1,7 @@
-﻿using PoweredSoft.CodeGenerator.Models;
-
-namespace PoweredSoft.CodeGenerator
+﻿namespace PoweredSoft.CodeGenerator
 {
-    public class ElseIfBuilder : ConditionBuilder<ElseIfConditionModel, ElseIfBuilder>
+    public class ElseIfBuilder : ConditionBuilder<ElseIfBuilder>
     {
-
+        protected override string ConditionType => "else if";
     }
 }
