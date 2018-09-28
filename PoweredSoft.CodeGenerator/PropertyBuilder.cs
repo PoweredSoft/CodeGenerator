@@ -10,8 +10,8 @@ namespace PoweredSoft.CodeGenerator
     public class PropertyBuilder : ClassMemberBuilder<PropertyBuilder>
     {
         protected string _underlyingMember;
-        private bool _canSet;
-        private AccessModifiers _setAccessModifier;
+        private bool _canSet = true;
+        private AccessModifiers _setAccessModifier = AccessModifiers.Public;
         private bool _isVirtual;
 
         public override List<string> GenerateLines()

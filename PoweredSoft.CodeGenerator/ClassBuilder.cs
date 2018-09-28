@@ -16,6 +16,7 @@ namespace PoweredSoft.CodeGenerator
         private bool _isStatic;
         private object _meta;
 
+        public List<IInlineGeneretable> Inheritances { get; } = new List<IInlineGeneretable>();
         public List<IGeneratable> Children { get; } = new List<IGeneratable>();
         public IEnumerable<PropertyBuilder> Properties => Children.Where(t => t is PropertyBuilder).Cast<PropertyBuilder>();
         public IEnumerable<FieldBuilder> Fields => Children.Where(t => t is FieldBuilder).Cast<FieldBuilder>();
@@ -43,10 +44,17 @@ namespace PoweredSoft.CodeGenerator
             throw new Exception("Tried 1000 unique names all are taken.");
         }
 
-
         public static ClassBuilder Create()
         {
             return new ClassBuilder();;
+        }
+
+        public ClassBuilder Constructor(Action<ConstructorBuilder> action)
+        {
+            var constructor = ConstructorBuilder.Create().Class(this);
+            Children.Add(constructor);
+            action(constructor);
+            return this;
         }
 
         public ClassBuilder Name(string name)
@@ -139,7 +147,9 @@ namespace PoweredSoft.CodeGenerator
 
             ret += $" class {_name}";
 
-            // TODO inheritance
+            if (Inheritances.Any())
+                ret += " : " + string.Join(", ", Inheritances.Select(inheritance => inheritance.GenerateInline()));
+            
             return ret;
         }
 
@@ -177,6 +187,12 @@ namespace PoweredSoft.CodeGenerator
         public object GetMeta()
         {
             return _meta;
+        }
+
+        public ClassBuilder Inherits(string raw)
+        {
+            Inheritances.Add(RawInlineBuilder.Create(raw));
+            return this;
         }
     }
 }

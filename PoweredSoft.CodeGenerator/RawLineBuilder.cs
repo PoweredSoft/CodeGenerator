@@ -22,6 +22,12 @@ namespace PoweredSoft.CodeGenerator
             return this;
         }
 
+        public RawLineBuilder Append(string raw)
+        {
+            _raw += raw;
+            return this;
+        }
+
         public List<string> GenerateLines()
         {
             return new List<string>{ $"{_raw};" };
