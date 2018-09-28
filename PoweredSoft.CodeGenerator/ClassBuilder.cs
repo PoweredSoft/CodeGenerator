@@ -17,7 +17,14 @@ namespace PoweredSoft.CodeGenerator
         public IEnumerable<FieldBuilder> Fields => Model.Children.Where(t => t is FieldBuilder).Cast<FieldBuilder>();
         public IEnumerable<MethodBuilder> Methods => Model.Children.Where(t => t is MethodBuilder).Cast<MethodBuilder>();
 
-        public bool HasMemberWithName(string name) => Model.Children.Any(t => (t as IHasName)?.Name == name);
+        public bool HasMemberWithName(string name) => Model.Children.Any(t =>
+        {
+            var prop = t.GetType().GetProperty("Model");
+            if (prop == null) return false;
+            var model = prop.GetValue(t);
+            return (model as IHasName)?.Name == name;
+        });
+
         public bool PropertyExists(string name) => Properties.Any(t => t.Model.Name == name);
         public bool FieldExists(string name) => Fields.Any(t => t.Model.Name == name);
         public PropertyBuilder GetProperty(string name) => Properties.FirstOrDefault(t => t.Model.Name == name);
