@@ -28,6 +28,21 @@ namespace PoweredSoft.CodeGenerator
         public PropertyBuilder GetProperty(string name) => Properties.FirstOrDefault(t => t.IsNamed(name));
         public FieldBuilder GetField(string name) => Fields.FirstOrDefault(t => t.IsNamed(name));
 
+        public string GetUniqueMemberName(string name)
+        {
+            if (!HasMemberWithName(name))
+                return name;
+
+            for (var i = 1; i <= 1000; i++)
+            {
+                var temp = $"{name}{i}";
+                if (!HasMemberWithName(temp))
+                    return temp;
+            }
+
+            throw new Exception("Tried 1000 unique names all are taken.");
+        }
+
 
         public static ClassBuilder Create()
         {
