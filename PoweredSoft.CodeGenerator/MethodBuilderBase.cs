@@ -18,6 +18,8 @@ namespace PoweredSoft.CodeGenerator
         private bool _isPartial;
         private bool _isAbstract;
         private AccessModifiers _accessModifier;
+        private bool _override;
+
 
         public static TBuilder Create() => new TBuilder();
 
@@ -33,6 +35,12 @@ namespace PoweredSoft.CodeGenerator
         public TBuilder Virtual(bool isVirtual)
         {
             _isVirtual = isVirtual;
+            return this as TBuilder;
+        }
+
+        public TBuilder Override(bool o)
+        {
+            _override = o;
             return this as TBuilder;
         }
 
@@ -74,14 +82,20 @@ namespace PoweredSoft.CodeGenerator
             return this as TBuilder;
         }
 
-        public TBuilder Add(Func<IMultiLineGeneratable> child)
+        public TBuilder Add(Func<IGeneratable> child)
         {
             var result = child();
             Children.Add(result);
             return this as TBuilder;
         }
 
-        public TBuilder Add(IMultiLineGeneratable child)
+        public TBuilder AddComment(string comment)
+        {
+            Children.Add(SingleLineCommentBuilder.Create(comment));
+            return this as TBuilder;
+        }
+
+        public TBuilder Add(IGeneratable child)
         {
             Children.Add(child);
             return this as TBuilder;
@@ -89,7 +103,7 @@ namespace PoweredSoft.CodeGenerator
 
         public TBuilder RawLine(string raw) => Add(RawLineBuilder.Create(raw));
 
-        protected string GenerateSignature()
+        protected virtual string GenerateSignature()
         {
             var signature = $"{_accessModifier.Generate()}";
 
@@ -105,6 +119,9 @@ namespace PoweredSoft.CodeGenerator
             if (_isPartial)
                 signature += " partial";
 
+            if (_override)
+                signature += " override";
+
             if (!string.IsNullOrWhiteSpace(_returnType))
                 signature += $" {_returnType}";
 
@@ -117,7 +134,7 @@ namespace PoweredSoft.CodeGenerator
             if (_isPartial || _isAbstract)
                 signature += ";";
 
-            return signature;
+            return signature.TrimStart();
         }
 
         public List<string> GenerateLines()

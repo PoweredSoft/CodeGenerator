@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using PoweredSoft.CodeGenerator.Constants;
 using PoweredSoft.CodeGenerator.Core;
@@ -9,6 +10,8 @@ namespace PoweredSoft.CodeGenerator
     public class ConstructorBuilder : MethodBuilderBase<ConstructorBuilder>
     {
         private ClassBuilder _class;
+
+        public List<IInlineGeneretable> BaseParameters { get; } = new List<IInlineGeneretable>();
 
         public override ConstructorBuilder Name(string name)
         {
@@ -22,6 +25,20 @@ namespace PoweredSoft.CodeGenerator
             return this;
         }
 
-        
+        public ConstructorBuilder BaseParameter(string raw)
+        {
+            BaseParameters.Add(RawInlineBuilder.Create(raw));
+            return this;
+        }
+
+        protected override string GenerateSignature()
+        {
+            var ret = base.GenerateSignature();
+
+            if (BaseParameters.Any())
+                ret += " : base(" + string.Join(", ", BaseParameters.Select(t2 => t2.GenerateInline())) + ")";
+
+            return ret;
+        }
     }
 }

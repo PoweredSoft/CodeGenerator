@@ -22,6 +22,8 @@ namespace PoweredSoft.CodeGenerator.Extensions
                 return "private";
             if (accessModifier == AccessModifiers.Protected)
                 return "protected";
+            if (accessModifier == AccessModifiers.Omit)
+                return "";
 
             throw new NotSupportedException("Unknown access modifier specified");
         }

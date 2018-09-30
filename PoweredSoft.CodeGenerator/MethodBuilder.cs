@@ -10,5 +10,6 @@ namespace PoweredSoft.CodeGenerator
 {
     public class MethodBuilder : MethodBuilderBase<MethodBuilder>
     {
+       
     }
 }
