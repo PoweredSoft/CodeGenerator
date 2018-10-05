@@ -33,6 +33,7 @@ namespace PoweredSoft.CodeGenerator
                 propertyLine += " static";
             
             propertyLine += $" {_type} {_name}";
+            propertyLine = propertyLine.TrimStart();
 
             ret.Add(propertyLine);
 
@@ -47,7 +48,7 @@ namespace PoweredSoft.CodeGenerator
 
             if (_canSet)
             {
-                var setAccess = _setAccessModifier != _accessModifier ? $"{_setAccessModifier.Generate()} " : "";
+                var setAccess = _accessModifier != AccessModifiers.Omit && _setAccessModifier != _accessModifier ? $"{_setAccessModifier.Generate()} " : "";
                 ret.Add($"    {setAccess}set");
                 ret.Add("    {");
                 ret.Add($"        {_underlyingMember} = value;");
@@ -74,7 +75,7 @@ namespace PoweredSoft.CodeGenerator
 
             if (_canSet)
             {
-                if (_setAccessModifier != _accessModifier)
+                if (_accessModifier != AccessModifiers.Omit && _setAccessModifier != _accessModifier)
                     line += $" {_setAccessModifier.Generate()}";
 
                 line += " set;";
@@ -88,6 +89,7 @@ namespace PoweredSoft.CodeGenerator
             if (!string.IsNullOrWhiteSpace(_comment))
                 line += $"// {_comment}";
 
+            line = line.TrimStart();
             return new List<string> { line };
         }
 

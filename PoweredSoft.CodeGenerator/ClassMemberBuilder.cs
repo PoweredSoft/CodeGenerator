@@ -10,7 +10,7 @@ namespace PoweredSoft.CodeGenerator
         protected string _type;
         protected string _comment;
         protected string _name;
-        protected AccessModifiers _accessModifier;
+        protected AccessModifiers _accessModifier = AccessModifiers.Public;
         protected string _defaultValue;
         protected bool _isStatic;
         protected object _meta;

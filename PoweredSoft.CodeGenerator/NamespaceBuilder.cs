@@ -13,6 +13,7 @@ namespace PoweredSoft.CodeGenerator
         private string _name;
         public List<IGeneratable> Children { get; } = new List<IGeneratable>();
         public IEnumerable<ClassBuilder> Classes => Children.Where(t => t is ClassBuilder).Cast<ClassBuilder>();
+        public IEnumerable<InterfaceBuilder> Interfaces => Children.Where(t => t is InterfaceBuilder).Cast<InterfaceBuilder>();
         public static NamespaceBuilder Create() => new NamespaceBuilder();
 
         public NamespaceBuilder Name(string name)
@@ -67,5 +68,32 @@ namespace PoweredSoft.CodeGenerator
         }
 
         public string GetName() => _name;
+
+        public NamespaceBuilder Interface(Action<InterfaceBuilder> action)
+        {
+            var i = InterfaceBuilder.Create();
+            Children.Add(i);
+            action(i);
+            return this;
+        }
+
+        public NamespaceBuilder Interface(string name, bool createIfNotExist, Action<InterfaceBuilder> action)
+        {
+            var child = Interfaces.FirstOrDefault(t => t.GetName() == name);
+            if (child == null && !createIfNotExist)
+                throw new Exception($"Could not find interface with name: {name}");
+
+            if (child == null)
+            {
+                return Interface(t =>
+                {
+                    t.Name(name);
+                    action(t);
+                });
+            }
+
+            action(child);
+            return this;
+        }
     }
 }

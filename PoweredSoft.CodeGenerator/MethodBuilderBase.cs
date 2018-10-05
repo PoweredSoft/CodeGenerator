@@ -19,6 +19,7 @@ namespace PoweredSoft.CodeGenerator
         private bool _isAbstract;
         private AccessModifiers _accessModifier;
         private bool _override;
+        private bool _isBodyLess;
 
 
         public static TBuilder Create() => new TBuilder();
@@ -29,6 +30,12 @@ namespace PoweredSoft.CodeGenerator
         public virtual TBuilder Name(string name)
         {
             _name = name;
+            return this as TBuilder;
+        }
+
+        public virtual TBuilder BodyLess(bool isBodyLess)
+        {
+            _isBodyLess = isBodyLess;
             return this as TBuilder;
         }
 
@@ -103,6 +110,11 @@ namespace PoweredSoft.CodeGenerator
 
         public TBuilder RawLine(string raw) => Add(RawLineBuilder.Create(raw));
 
+        public bool HasBody()
+        {
+            return !this._isAbstract && !this._isPartial && !this._isBodyLess;
+        }
+
         protected virtual string GenerateSignature()
         {
             var signature = $"{_accessModifier.Generate()}";
@@ -131,7 +143,7 @@ namespace PoweredSoft.CodeGenerator
             signature += string.Join(", ", Parameters.Select(t => t.GenerateInline()));
             signature += ")";
 
-            if (_isPartial || _isAbstract)
+            if (!HasBody())
                 signature += ";";
 
             return signature.TrimStart();
@@ -145,7 +157,7 @@ namespace PoweredSoft.CodeGenerator
             var signature = GenerateSignature();
             ret.Add(signature);
 
-            if (!_isAbstract && !_isPartial)
+            if (HasBody())
             {
                 ret.Add("{");
                 ret.AddRange(Children.IdentChildren());

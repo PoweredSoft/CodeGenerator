@@ -26,7 +26,17 @@ namespace PoweredSoft.CodeGenerator
             .Where(t => t is ClassBuilder)
             .Cast<ClassBuilder>();
 
+        private IEnumerable<InterfaceBuilder> FileInterfaces => Files
+            .SelectMany(t => t.Children)
+            .Where(t => t is InterfaceBuilder).Cast<InterfaceBuilder>();
+
+        private IEnumerable<InterfaceBuilder> NamespaceInterfaces => Namespaces
+            .SelectMany(t => t.Children)
+            .Where(t => t is InterfaceBuilder)
+            .Cast<InterfaceBuilder>();
+
         public IEnumerable<ClassBuilder> Classes => FileClasses.Union(NamespaceClasses);
+        public IEnumerable<InterfaceBuilder> Interfaces => FileInterfaces.Union(NamespaceInterfaces);
 
         public GenerationContext SingleFile(Action<FileBuilder> action)
         {
