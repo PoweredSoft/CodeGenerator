@@ -3,11 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoweredSoft.CodeGenerator", "PoweredSoft.CodeGenerator\PoweredSoft.CodeGenerator.csproj", "{0B45DE69-D368-4E5D-A7B0-314D1FB22305}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoweredSoft.CodeGenerator", "PoweredSoft.CodeGenerator\PoweredSoft.CodeGenerator.csproj", "{0B45DE69-D368-4E5D-A7B0-314D1FB22305}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoweredSoft.CodeGenerator.Test", "PoweredSoft.CodeGenerator.Test\PoweredSoft.CodeGenerator.Test.csproj", "{9CD7EDDC-2146-4385-911E-8458B9817EBD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoweredSoft.CodeGenerator.Test", "PoweredSoft.CodeGenerator.Test\PoweredSoft.CodeGenerator.Test.csproj", "{9CD7EDDC-2146-4385-911E-8458B9817EBD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoweredSoft.CodeGenerator.Cli", "PoweredSoft.CodeGenerator.Cli\PoweredSoft.CodeGenerator.Cli.csproj", "{D81C2931-0622-41EE-AECA-716530896396}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoweredSoft.CodeGenerator.Cli", "PoweredSoft.CodeGenerator.Cli\PoweredSoft.CodeGenerator.Cli.csproj", "{D81C2931-0622-41EE-AECA-716530896396}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{81F61D8A-2795-43B4-B16A-69BA2AC63501}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE.md = LICENSE.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
