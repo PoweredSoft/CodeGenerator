@@ -5,9 +5,11 @@ using PoweredSoft.CodeGenerator.Core;
 
 namespace PoweredSoft.CodeGenerator
 {
-    public class RawLineBuilder : IMultiLineGeneratable
+    public class RawLineBuilder : ISingleLineGeneratable
     {
         public string _raw;
+        private bool _noEndOfLine;
+        private string _comment;
 
         public static RawLineBuilder Create(string rawLine = null)
         {
@@ -28,9 +30,24 @@ namespace PoweredSoft.CodeGenerator
             return this;
         }
 
-        public List<string> GenerateLines()
+        public RawLineBuilder NoEndOfLine()
         {
-            return new List<string>{ $"{_raw};" };
+            _noEndOfLine = true;
+            return this;
+        }
+
+        public RawLineBuilder Comment(string comment)
+        {
+            _comment = comment;
+            return this;
+        }
+
+        public string GenerateLine()
+        {
+            var l = $"{_raw}{(_noEndOfLine ? "" : ";")}";
+            if (!string.IsNullOrWhiteSpace(_comment))
+                l += $" // {_comment}";
+            return l;
         }
     }
 }

@@ -73,6 +73,15 @@ namespace PoweredSoft.CodeGenerator
             return this;
         }
 
+        public GenerationContext FileIfPathIsSet(Action<FileBuilder> action)
+        {
+            var file = FileBuilder.Create();
+            action(file);
+            if (file.HasPathConfigured())
+                Files.Add(file);
+            return this;
+        }
+
         public GenerationContext SaveToDisk(Encoding encoding)
         {
             Files.ForEach(file =>

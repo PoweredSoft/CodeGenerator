@@ -15,7 +15,7 @@ namespace PoweredSoft.CodeGenerator
         private AccessModifiers _accessModifier;
         private object _meta;
 
-        public List<IInlineGeneretable> Inheritances { get; } = new List<IInlineGeneretable>();
+        public List<IInlineGeneratable> Inheritances { get; } = new List<IInlineGeneratable>();
         public List<IGeneratable> Children { get; } = new List<IGeneratable>();
         public IEnumerable<PropertyBuilder> Properties => Children.Where(t => t is PropertyBuilder).Cast<PropertyBuilder>();
         public IEnumerable<FieldBuilder> Fields => Children.Where(t => t is FieldBuilder).Cast<FieldBuilder>();
@@ -140,9 +140,26 @@ namespace PoweredSoft.CodeGenerator
             var ret = new List<string>();
             ret.Add(GenerateInterfaceSignature());
             ret.Add("{");
-            ret.AddRange(Children.IdentChildren());
+            var orderedChildren = OrderChildren(Children);
+            ret.AddRange(orderedChildren.IdentChildren());
             ret.Add("}");
             return ret;
+        }
+
+        public IEnumerable<IGeneratable> OrderChildren(List<IGeneratable> children)
+        {
+            return children.OrderBy(c =>
+            {
+                if (c is FieldBuilder)
+                    return 1;
+                if (c is PropertyBuilder)
+                    return 2;
+                if (c is ConstructorBuilder)
+                    return 3;
+                if (c is MethodBuilder)
+                    return 4;
+                return 5;
+            });
         }
 
 

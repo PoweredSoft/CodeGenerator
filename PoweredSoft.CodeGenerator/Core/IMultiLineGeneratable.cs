@@ -17,7 +17,7 @@ namespace PoweredSoft.CodeGenerator.Core
         string GenerateLine();
     }
 
-    public interface IInlineGeneretable : IGeneratable
+    public interface IInlineGeneratable : IGeneratable
     {
         string GenerateInline();
     }

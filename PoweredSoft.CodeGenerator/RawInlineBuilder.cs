@@ -5,7 +5,7 @@ using PoweredSoft.CodeGenerator.Core;
 
 namespace PoweredSoft.CodeGenerator
 {
-    public class RawInlineBuilder : IInlineGeneretable
+    public class RawInlineBuilder : IInlineGeneratable
     {
         public static RawInlineBuilder Create() => new RawInlineBuilder();
         public static RawInlineBuilder Create(string raw) => RawInlineBuilder.Create().Raw(raw);

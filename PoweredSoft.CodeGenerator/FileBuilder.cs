@@ -84,5 +84,6 @@ namespace PoweredSoft.CodeGenerator
             return ret;
         }
 
+        public bool HasPathConfigured() => !string.IsNullOrWhiteSpace(_path);
     }
 }

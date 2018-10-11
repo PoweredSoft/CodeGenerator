@@ -17,6 +17,8 @@ namespace PoweredSoft.CodeGenerator
 
         public static TBuilder Create() => new TBuilder();
 
+        public string GetTypeName() => _type;
+
         public TBuilder Type(string typeName)
         {
             _type = typeName;

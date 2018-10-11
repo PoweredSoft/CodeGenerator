@@ -108,6 +108,11 @@ namespace PoweredSoft.CodeGenerator
             return this as TBuilder;
         }
 
+        public void AddEmptyLine()
+        {
+            Children.Add(RawLineBuilder.Create("").NoEndOfLine());
+        }
+
         public TBuilder RawLine(string raw) => Add(RawLineBuilder.Create(raw));
 
         public bool HasBody()

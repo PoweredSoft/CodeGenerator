@@ -56,11 +56,19 @@ namespace PoweredSoft.CodeGenerator.Extensions
         public static List<string> IdentLines(this IEnumerable<string> lines, int identCount = 1)
         {
             var prepend = "";
+            const string prependSpaces = "    ";
             for (var i = 0; i < identCount; i++)
-                prepend += "    ";
+                prepend += prependSpaces;
 
 
-            var ret = lines.Select(t => $"{prepend}{t}").ToList();
+            var ret = lines.Select(t =>
+            {
+                if (t.Contains("\n"))
+                    return string.Join("\n", t.Split('\n').IdentLines(identCount));
+                else
+                    return $"{prepend}{t.Replace("\t", prependSpaces)}";
+            }).ToList();
+
             return ret;
         }
 
@@ -85,6 +93,29 @@ namespace PoweredSoft.CodeGenerator.Extensions
         {
             var childrenLines = children.SelectMany(t => t.ToLines());
             var ret = childrenLines.IdentLines(identCount);
+            return ret;
+        }
+
+        public static string GenerateConditionExpression(this IEnumerable<IConditionExpressionBuilder> conditionExpressions)
+        {
+            var parts = conditionExpressions.Select((exp, index) =>
+            {
+                var expStr = "";
+                if (index != 0)
+                    expStr += (exp.IsAnd() ? "&&" : "||") + " ";
+
+                if (exp.ShouldWrap())
+                    expStr += "(";
+
+                expStr += exp.GenerateInline();
+
+                if (exp.ShouldWrap())
+                    expStr += ")";
+
+                return expStr;
+            });
+
+            var ret = $"{string.Join(" ", parts)}";
             return ret;
         }
 

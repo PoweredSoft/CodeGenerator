@@ -5,7 +5,7 @@ using PoweredSoft.CodeGenerator.Core;
 
 namespace PoweredSoft.CodeGenerator
 {
-    public class ParameterBuilder : IInlineGeneretable
+    public class ParameterBuilder : IInlineGeneratable, IHasName
     {
         private string _type;
         private string _name;
@@ -38,5 +38,7 @@ namespace PoweredSoft.CodeGenerator
                 ret += $" = {_defaultValue}";
             return ret;
         }
+
+        public string GetName() => _name;
     }
 }

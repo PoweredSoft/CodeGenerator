@@ -23,13 +23,13 @@ namespace PoweredSoft.CodeGenerator
             return this as TBuilder;
         }
 
-        public TBuilder Add(IMultiLineGeneratable child)
+        public TBuilder Add(IGeneratable child)
         {
             Children.Add(child);
             return this as TBuilder;
         }
 
-        public TBuilder Add(Func<IMultiLineGeneratable> child)
+        public TBuilder Add(Func<IGeneratable> child)
         {
             Children.Add(child());
             return this as TBuilder;
@@ -88,7 +88,7 @@ namespace PoweredSoft.CodeGenerator
                 return expStr;
             });
 
-            ret += $" ({string.Join(" ", parts)})";
+            ret += $" (" + Expressions.GenerateConditionExpression() + ")";
             return ret;
         }
     }

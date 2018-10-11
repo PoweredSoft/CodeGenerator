@@ -11,7 +11,7 @@ namespace PoweredSoft.CodeGenerator
     {
         private ClassBuilder _class;
 
-        public List<IInlineGeneretable> BaseParameters { get; } = new List<IInlineGeneretable>();
+        public List<IInlineGeneratable> BaseParameters { get; } = new List<IInlineGeneratable>();
 
         public override ConstructorBuilder Name(string name)
         {

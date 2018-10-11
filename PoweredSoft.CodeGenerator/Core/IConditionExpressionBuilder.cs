@@ -4,7 +4,7 @@ using System.Text;
 
 namespace PoweredSoft.CodeGenerator.Core
 {
-    public interface IConditionExpressionBuilder : IInlineGeneretable
+    public interface IConditionExpressionBuilder : IInlineGeneratable
     {
         bool IsAnd();
         bool ShouldWrap();
