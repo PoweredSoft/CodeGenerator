@@ -2,6 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageProjectUrl>https://github.com/PoweredSoft/CodeGenerator</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/PoweredSoft/CodeGenerator/blob/master/LICENSE.md</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/PoweredSoft/CodeGenerator</RepositoryUrl>
+    <RepositoryType>github</RepositoryType>
+    <PackageTags>code generator csharp</PackageTags>
+    <Copyright>Powered Softwares Inc.</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
