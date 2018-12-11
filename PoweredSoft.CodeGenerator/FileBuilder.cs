@@ -9,9 +9,12 @@ using PoweredSoft.CodeGenerator.Extensions;
 
 namespace PoweredSoft.CodeGenerator
 {
-    public class FileBuilder : IMultiLineGeneratable, IHasGeneratableChildren
+    public class FileBuilder : IMultiLineGeneratable, IHasGeneratableChildren, 
+        IShouldGenerateBuilder<FileBuilder>
     {
         private string _path;
+        private bool _generate;
+
         public static FileBuilder Create() => new FileBuilder();
         public List<IGeneratable> Children { get; } = new List<IGeneratable>();
         public List<string> Usings { get; } = new List<string>();
@@ -85,5 +88,13 @@ namespace PoweredSoft.CodeGenerator
         }
 
         public bool HasPathConfigured() => !string.IsNullOrWhiteSpace(_path);
+
+        public FileBuilder Generate(bool generate)
+        {
+            this._generate = generate;
+            return this;
+        }
+
+        public bool ShouldGenerate() => _generate;
     }
 }
