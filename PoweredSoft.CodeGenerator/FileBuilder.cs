@@ -4,6 +4,7 @@ using System.Diagnostics.SymbolStore;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using PoweredSoft.CodeGenerator.Core;
 using PoweredSoft.CodeGenerator.Extensions;
 
@@ -65,10 +66,21 @@ namespace PoweredSoft.CodeGenerator
             return this;
         }
 
-        public void SaveToFile(Encoding encoding)
+        public void SaveToFile(Encoding encoding, bool normalizeNewLines = false)
         {
             var lines = GenerateLines();
-            File.WriteAllLines(_path, lines, encoding);
+            
+
+            if (normalizeNewLines)
+            {
+                var text = string.Join(Environment.NewLine, lines);
+                string normalized = Regex.Replace(text, @"\r\n|\n\r|\n|\r", Environment.NewLine);
+                File.WriteAllText(_path, normalized, encoding);
+            }
+            else
+            {
+                File.WriteAllLines(_path, lines, encoding);
+            }
         }
 
         public List<string> GenerateLines()

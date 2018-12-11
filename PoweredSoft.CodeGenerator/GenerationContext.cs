@@ -82,11 +82,11 @@ namespace PoweredSoft.CodeGenerator
             return this;
         }
 
-        public GenerationContext SaveToDisk(Encoding encoding)
+        public GenerationContext SaveToDisk(Encoding encoding, bool normalizeNewLines = false)
         {
             Files.ForEach(file =>
             {
-                file.SaveToFile(encoding);
+                file.SaveToFile(encoding, normalizeNewLines: normalizeNewLines);
             });
             return this;
         }
