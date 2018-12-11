@@ -9,14 +9,13 @@ using PoweredSoft.CodeGenerator.Extensions;
 namespace PoweredSoft.CodeGenerator
 {
     public class ClassBuilder : IMultiLineGeneratable, 
-        IHasName, IHasGeneratableChildren, IHasMeta, IShouldGenerateBuilder<ClassBuilder>
+        IHasName, IHasGeneratableChildren, IHasMeta
     {
         private string _name;
         private bool _isPartial;
         private AccessModifiers _accessModifier;
         private bool _isStatic;
         private object _meta;
-        private bool _generate;
 
         public List<IInlineGeneratable> Inheritances { get; } = new List<IInlineGeneratable>();
         public List<IGeneratable> Children { get; } = new List<IGeneratable>();
@@ -212,13 +211,5 @@ namespace PoweredSoft.CodeGenerator
             Inheritances.Add(RawInlineBuilder.Create(raw));
             return this;
         }
-
-        public ClassBuilder Generate(bool generate)
-        {
-            this._generate = generate;
-            return this;
-        }
-
-        public bool ShouldGenerate() => _generate;
     }
 }

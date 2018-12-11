@@ -81,9 +81,6 @@ namespace PoweredSoft.CodeGenerator.Extensions
 
         public static List<string> ToLines(this IGeneratable that)
         {
-            if (that is IShouldGenerateBuilder && !((IShouldGenerateBuilder)that).ShouldGenerate())
-                return new List<string>();
-
             if (that is IMultiLineGeneratable)
                 return (that as IMultiLineGeneratable).GenerateLines();
             if (that is ISingleLineGeneratable)
@@ -94,14 +91,6 @@ namespace PoweredSoft.CodeGenerator.Extensions
 
         public static List<string> IdentChildren(this IEnumerable<IGeneratable> children, int identCount = 1)
         {
-            children = children.Where(t =>
-            {
-                if (t is IShouldGenerateBuilder)
-                    return ((IShouldGenerateBuilder)t).ShouldGenerate();
-
-                return true;
-            });
-
             var childrenLines = children.SelectMany(t => t.ToLines());
             var ret = childrenLines.IdentLines(identCount);
             return ret;

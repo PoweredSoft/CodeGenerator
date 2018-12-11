@@ -90,5 +90,21 @@ namespace PoweredSoft.CodeGenerator
             });
             return this;
         }
+
+        public GenerationContext File(string path, Action<FileBuilder> action)
+        {
+            var existing = Files.FirstOrDefault(t => t.GetPath().Equals(path));
+            if (null != existing)
+            {
+                action(existing);
+                return this;
+            }
+
+            return File(fb =>
+            {
+                fb.Path(path);
+                action(fb);
+            });
+        }
     }
 }
