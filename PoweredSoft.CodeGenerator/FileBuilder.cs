@@ -66,10 +66,16 @@ namespace PoweredSoft.CodeGenerator
             return this;
         }
 
-        public void SaveToFile(Encoding encoding, bool normalizeNewLines = false)
+        public void SaveToFile(Encoding encoding, bool normalizeNewLines = false, bool createDir = false)
         {
             var lines = GenerateLines();
-            
+
+            if (createDir)
+            {
+                var pathDir = System.IO.Path.GetDirectoryName(_path);
+                if (!Directory.Exists(pathDir))
+                    Directory.CreateDirectory(pathDir);
+            }
 
             if (normalizeNewLines)
             {
