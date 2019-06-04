@@ -10,13 +10,14 @@
     <RepositoryType>github</RepositoryType>
     <PackageTags>code generator csharp</PackageTags>
     <Copyright>Powered Softwares Inc.</Copyright>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Product>PoweredSoft.CodeGenerator</Product>
     <Description>code generator.</Description>
     <PackageId>PoweredSoft.CodeGenerator</PackageId>
-    <PackageReleaseNotes>lots of new helpers.</PackageReleaseNotes>
+    <PackageReleaseNotes>attribute helpers</PackageReleaseNotes>
     <Company>PoweredSoft.CodeGenerator</Company>
     <Authors>PoweredSoft.CodeGenerator</Authors>
+    <PackageIconUrl>https://secure.gravatar.com/avatar/4e32f73820c16718909a06c2927f1f8b?s=512&amp;amp;amp;r=g&amp;amp;amp;d=retro</PackageIconUrl>
   </PropertyGroup>
 
   <ItemGroup>
