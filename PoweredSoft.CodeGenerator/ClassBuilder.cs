@@ -17,6 +17,7 @@ namespace PoweredSoft.CodeGenerator
         private bool _isStatic;
         private object _meta;
 
+        public List<AttributeBuilder> Attributes = new List<AttributeBuilder>();
         public List<IInlineGeneratable> Inheritances { get; } = new List<IInlineGeneratable>();
         public List<IGeneratable> Children { get; } = new List<IGeneratable>();
         public IEnumerable<PropertyBuilder> Properties => Children.Where(t => t is PropertyBuilder).Cast<PropertyBuilder>();
@@ -157,6 +158,9 @@ namespace PoweredSoft.CodeGenerator
         public List<string> GenerateLines()
         {
             var ret = new List<string>();
+            if (true == Attributes?.Any())
+                ret.AddRange(Attributes.Select(t => t.GenerateInline()));
+
             ret.Add(GenerateClassSignature());
             ret.Add("{");
             var orderedChildren = OrderChildren(Children);
@@ -179,6 +183,14 @@ namespace PoweredSoft.CodeGenerator
                     return 4;
                 return 5;
             });
+        }
+
+        public ClassBuilder Attribute(Action<AttributeBuilder> action)
+        {
+            var attribute = new AttributeBuilder();
+            Attributes.Add(attribute);
+            action(attribute);
+            return this;
         }
 
         public ClassBuilder Method(Action<MethodBuilder> action)

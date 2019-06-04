@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using PoweredSoft.CodeGenerator.Constants;
 using PoweredSoft.CodeGenerator.Core;
 
@@ -14,6 +16,21 @@ namespace PoweredSoft.CodeGenerator
         protected string _defaultValue;
         protected bool _isStatic;
         protected object _meta;
+
+        public List<AttributeBuilder> Attributes { get; protected set; } = new List<AttributeBuilder>();
+
+        protected virtual IEnumerable<string> GetAttributesLines()
+        {
+            return Attributes.Select(t => t.GenerateInline());
+        }
+
+        public TBuilder Attribute(Action<AttributeBuilder> action)
+        {
+            var attribute = new AttributeBuilder();
+            Attributes.Add(attribute);
+            action(attribute);
+            return this as TBuilder;
+        }
 
         public static TBuilder Create() => new TBuilder();
 

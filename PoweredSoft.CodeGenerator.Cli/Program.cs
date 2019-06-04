@@ -27,10 +27,16 @@ namespace PoweredSoft.CodeGenerator.Cli
                                 .Name("Acme.Dal")
                                 .Class(c =>
                                 {
+                                    c.Attribute(attr => attr
+                                        .Name("ModelAttribute")
+                                        .Value(RawInlineBuilder.Create("\"Foo.Bar\""))
+                                        .Value(RawInlineBuilder.Create("1"))
+                                        );
+
                                     c
                                         .Name("Person")
                                         .Partial(true)
-                                        .Property(p => p.Name("Id").Type("long").Virtual(true))
+                                        .Property(p => p.Name("Id").Type("long").Virtual(true).Attribute(ab => ab.Name("SomeAttribute").Value("1", "\"David\"")))
                                         .Property(p => p.Name("FirstName").Type("string").Virtual(true))
                                         .Property(p => p.Name("LastName").Type("string").Virtual(true).Meta(a));
                                 })
@@ -55,6 +61,8 @@ namespace PoweredSoft.CodeGenerator.Cli
                                         .Method(m =>
                                         {
                                             m
+                                                .Attribute(ma => ma.Name("CoolMethod"))
+                                                .Attribute(ma => ma.Name("OtherMethod").Value("1", "false"))
                                                 .Name("To")
                                                 .Virtual(true)
                                                 .Parameter(p => p.Name("entity").Type("Person"))

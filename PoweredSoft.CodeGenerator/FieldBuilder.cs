@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using PoweredSoft.CodeGenerator.Core;
 using PoweredSoft.CodeGenerator.Extensions;
@@ -10,6 +11,11 @@ namespace PoweredSoft.CodeGenerator
     {
         public override List<string> GenerateLines()
         {
+            var ret = new List<string>();
+
+            if (Attributes?.Any() == true)
+                ret.AddRange(GetAttributesLines());
+
             var fieldLine = $"{_accessModifier.Generate()}";
 
             if (_isStatic)
@@ -21,7 +27,8 @@ namespace PoweredSoft.CodeGenerator
                 fieldLine += $" = {_defaultValue}";
 
             fieldLine += ";";
-            return new List<string> {fieldLine};
+            ret.Add(fieldLine);
+            return ret;
         }
     }
 }

@@ -27,6 +27,21 @@ namespace PoweredSoft.CodeGenerator
         public List<ParameterBuilder> Parameters { get; } = new List<ParameterBuilder>();
         public List<IGeneratable> Children { get; } = new List<IGeneratable>();
 
+        public List<AttributeBuilder> Attributes { get; protected set; } = new List<AttributeBuilder>();
+
+        protected virtual IEnumerable<string> GetAttributesLines()
+        {
+            return Attributes.Select(t => t.GenerateInline());
+        }
+
+        public TBuilder Attribute(Action<AttributeBuilder> action)
+        {
+            var attribute = new AttributeBuilder();
+            Attributes.Add(attribute);
+            action(attribute);
+            return this as TBuilder;
+        }
+
         public virtual TBuilder Name(string name)
         {
             _name = name;
@@ -157,6 +172,9 @@ namespace PoweredSoft.CodeGenerator
         public List<string> GenerateLines()
         {
             var ret = new List<string>();
+
+            if (Attributes?.Any() == true)
+                ret.AddRange(GetAttributesLines());
 
             // signature.
             var signature = GenerateSignature();

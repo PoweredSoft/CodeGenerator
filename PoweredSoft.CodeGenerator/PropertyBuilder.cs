@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Linq;
 using System.Text;
 using PoweredSoft.CodeGenerator.Constants;
 using PoweredSoft.CodeGenerator.Extensions;
@@ -25,6 +26,9 @@ namespace PoweredSoft.CodeGenerator
         protected List<string> GenerateUnderlyingProperty()
         {
             var ret = new List<string>();
+
+            if (Attributes?.Any() == true)
+                ret.AddRange(GetAttributesLines());
 
             // property line.,
             var propertyLine = $"{_accessModifier.Generate()}";
@@ -62,6 +66,11 @@ namespace PoweredSoft.CodeGenerator
 
         protected List<string> GenerateSimpleProperty()
         {
+            var ret = new List<string>();
+
+            if (Attributes?.Any() == true)
+                ret.AddRange(GetAttributesLines());
+
             var line = $"{_accessModifier.Generate()}";
 
             if (_isStatic)
@@ -90,7 +99,8 @@ namespace PoweredSoft.CodeGenerator
                 line += $"// {_comment}";
 
             line = line.TrimStart();
-            return new List<string> { line };
+            ret.Add(line);
+            return ret;
         }
 
         public PropertyBuilder Virtual(bool isVirtual)
